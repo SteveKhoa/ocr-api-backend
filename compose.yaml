@@ -1,0 +1,5 @@
+services:
+  tesseract-ocr:
+    image: tesseractshadow/tesseract4re
+    container_name: tesseract-ocr
+    entrypoint: ["tail", "-f", "/dev/null"]  # For dev phase only, MUST NOT BE USED IN PRODUCTION
