@@ -52,7 +52,9 @@ For **On-host** option, the `/tesseract` folder is shared between the container 
 - For example, in the SSH shell, type `python -m venv .venv` to initialize python virtual environment.
 
 ### Start developing
-1. Type `cd tesseract`
-2. Type `python -m venv .venv` in SSH shell to initialize python virtual environment.
-3. Type `pip install -r requirements.txt` to install python dependencies
-4. Good to go!
+1. Open the connected container shell
+2. Type `cd tesseract`
+3. Type `python -m venv .venv` in SSH shell to initialize python virtual environment
+4. Type `source .venv/bin/activate` to enter Python's virtual environment
+5. Type `pip install -r requirements.txt` to install python dependencies
+6. Good to go!
