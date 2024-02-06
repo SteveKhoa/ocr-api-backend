@@ -2,27 +2,57 @@
 
 This repository maintains the development of ocr-api backend facilities.
 
+For now, `dev-tesseract` is the only container in development.
+
 ## Contributing
 
+This project runs in Docker container.
+
+**TL;DR** 
+
+1. For quick start, run the script `init.sh` to build, create and start container.
+2. To stop the container, type `docker stop dev-tesseract`.
+3. Source code is shared to the container using **bind mounts**, side effects could happen.
+4. Connect to the container via SSH `admin@localhost` with password `123`.
+5. Type `python -m venv .venv` and `pip install -r requirements.txt` before developing.
+
 ### Setting up
-This project runs in Docker containers.
 
 1. Download and Install Docker
-2. Compose the neccessary services
+2. Build the project's Docker image
 ```
-docker compose up -d
+cd tesseract
+
+docker build -t img-dev-tesseract .
 ```
-3. When finish, decompose all the services
+3. Create a container from the built image
 ```
-docker compose down
+docker create --publish 22:22 \
+    --name dev-tesseract \
+    --mount type=bind,source="$(pwd)",target=/home/ubuntu/tesseract \
+    img-dev-tesseract
 ```
 
-**Note:** at the moment, running `docker compose down` is not enough to stop all containers, you must continuously press `CTRL C` (MacOS). The reason is that tesseract daemon is kept running infinitely for current developing purposes.
-
-### Run commands in containers
-#### Interacting with Tesseract OCR
+### Start and Stop the container
 ```
-docker exec tesseract-ocr [tesseract-commands]
+docker start dev-tesseract
+```
+```
+docker stop dev-tesseract
 ```
 
-For examples, ```docker exec tesseract-ocr tesseract --help``` will display canonical help for tesseract CLI.
+### Working with the container
+To start developing on the source code, you can either work directly on the repository (On-host), or connect remotely to the repository in the container (if you are using VSCode). This documentation describes On-host option only.
+
+For **On-host** option, the `/tesseract` folder is shared between the container and the repository. Modifications on the repository reflect the changes to the container. However, the code needs to be executed within the container via SSH.
+
+1. Connect to the container using SSH, ```ssh admin@localhost```, password `123`
+2. Start modifying the source code on your local repository
+3. To execute the code, run the command on the connected container's shell
+- For example, in the SSH shell, type `python -m venv .venv` to initialize python virtual environment.
+
+### Start developing
+1. Type `cd tesseract`
+2. Type `python -m venv .venv` in SSH shell to initialize python virtual environment.
+3. Type `pip install -r requirements.txt` to install python dependencies
+4. Good to go!
