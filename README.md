@@ -10,7 +10,7 @@ This project runs in Docker container.
 
 **TL;DR** 
 
-1. For quick start, run the script `init.sh` to build, create and start container.
+1. For quick start, run the script `init-tesseract.sh` to build, create and start container.
 2. To stop the container, type `docker stop dev-tesseract`.
 3. Source code is shared to the container using **bind mounts**, side effects could happen.
 4. Connect to the container via SSH `admin@localhost` with password `123`.
