@@ -18,7 +18,8 @@ This project runs in Docker container.
 4. Connect to the container via SSH `admin@localhost` with password `123`.
    - Type `ssh admin@localhost`, enter password `123`
    - IF `WARNING: REMOTE HOST IDENTIFICATION HAS CHANGED!`, type `ssh-keygen -R localhost`, and connect to the container again
-5. Type `python3.10 -m venv .venv` and `pip install -r requirements.txt`.
+5. After SSH to the container, type `cd tesseract`
+6. Type `python3.10 -m venv .venv` and `pip install -r requirements.txt`.
 
 **Notes:** 
 - The source code can be modified from outside the container (on local machine) or inside the container (by connecting to remote repository inside the container).
