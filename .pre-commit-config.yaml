@@ -1,0 +1,17 @@
+# This config file is for `pre-commit`
+# 
+# Usage:
+# 1. Run `pip install -r requirements.txt` in the master repository
+# 2. Make sure this file `.pre-commit-config.yaml` exists in the master repository
+# 3. Run `pre-commit install --hook-type commit-msg`
+# 4. pre-commit is ready!
+repos:
+-   repo: local
+    hooks:
+    -   id: check-commit-msg
+        name: Checking commit message convention
+        description: Commit message must match the convention (see ocr-api/internal/docs)
+        language: pygrep
+        entry: '^(chore|test|feat|fix|build|docs|refactor)!?:'
+        args: [--multiline, --negate]
+        stages: [commit-msg]
