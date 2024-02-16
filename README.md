@@ -47,9 +47,11 @@ docker create --publish 22:22 \
 # Start the container
 docker start dev-tesseract
 ```
-2. To stop the container, type `docker stop dev-tesseract`.
-3. Connect to the container via SSH `admin@localhost` with password `123`.
+2. Connect to the container via SSH `admin@localhost` with password `123`.
    - Type `ssh admin@localhost`, enter password `123`
    - IF `WARNING: REMOTE HOST IDENTIFICATION HAS CHANGED!`, type `ssh-keygen -R localhost`, and connect to the container again
-4. After SSH to the container, type `cd tesseract`
-5. Type `python3.10 -m venv .venv` and `pip install -r requirements.txt`.
+3. After SSH to the container, type `cd tesseract`
+4. Type `python3.10 -m venv .venv` and `pip install -r requirements.txt`.
+5. Done!
+
+    To stop the container, type `docker stop dev-tesseract`.
