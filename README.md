@@ -4,7 +4,7 @@ This repository maintains the development of ocr-api backend facilities.
 
 ## Contributing
 
-This project runs in Docker container.
+### Initialize The Docker Container
 
 #### Method 1: VSCode's Dev Container (Recommended)
 
@@ -47,3 +47,7 @@ docker start $CTN_NAME
 5. Done!
 
     To stop the container, type `docker stop dev-ocr-api`.
+
+### Running FastAPI server
+
+Type `cd app`, then `uvicorn main:app --reload`.
