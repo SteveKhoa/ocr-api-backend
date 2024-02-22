@@ -7,8 +7,12 @@ RUN apt -y install sudo
 RUN apt -y install openssh-server
 ENV TERM=xterm-256color
 
-# External services
+# Plugin services
 RUN apt -y install tesseract-ocr
+
+# Development-stage services
+RUN apt -y install libx11-dev
+RUN apt -y install python3-tk
 
 # Create user `admin`  and set password to `123`
 # (1) set default user directory to /home/ubuntu
