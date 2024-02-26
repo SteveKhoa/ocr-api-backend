@@ -161,3 +161,4 @@ cython_debug/
 
 NOTES.md
 client
+.DS_Store
