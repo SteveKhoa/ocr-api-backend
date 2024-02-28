@@ -13,12 +13,12 @@ def __keep_text_from(
     return data
 
 
-def correct_text(dataframe):
+def correct_text(dataframe: pandas.DataFrame) -> pandas.DataFrame:
     # NOT FINISHED, i just filter out all low-confident predictions
     dataframe = __keep_text_from(dataframe)
     return dataframe
 
 
-def get_text(dataframe):
+def get_text(dataframe: pandas.DataFrame) -> str:
     """Concatenate all text in the dataframe"""
     return " ".join(dataframe["text"])

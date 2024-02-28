@@ -1,9 +1,21 @@
+"""Tesseract OCR Engine
+"""
+
 import pytesseract
 from . import lang, preprocess, postprocess
 import numpy as np
 
 
 class TesseractOCR:
+    """
+        The TesseractOCR class is a Python wrapper for Tesseract,
+    an optical character recognition (OCR) engine developed
+    by Google. This class provides a convenient interface to
+    extract text from images using Tesseract, with additional
+    preprocessing and postprocessing steps to enhance accuracy
+    and reliability.
+    """
+
     def __init__(self, tesseract_lang: lang.Lang):
         self._lang = tesseract_lang
 
