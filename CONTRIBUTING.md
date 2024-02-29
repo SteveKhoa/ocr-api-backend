@@ -60,7 +60,7 @@ Run `python -m venv .venv` to initialize Python's virtual environment.
 
 ##### Install requirements.txt
 
-Type `pip install -r requirements.txt`.
+Type `pip install -r requirements/dev.txt`.
 
 You also need to install commit hooks: `pre-commit install --hook-type commit-msg`.
 
