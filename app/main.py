@@ -1,16 +1,8 @@
 from fastapi import FastAPI
-from app.modules.ocr.tesseract.engine import OCREngine
+from .auth import router as auth_router
+from .ocr import router as ocr_router
 
 app = FastAPI()
 
-
-@app.get("/")
-def read_root():
-    ocr = OCREngine()
-    text = ocr.read("hello")
-    return text
-
-
-@app.get("/items/{item_id}")
-def read_item(item_id):
-    return {"item_id": item_id, "description": "A sample item from a dummy database"}
+app.include_router(auth_router.auth_router)
+app.include_router(ocr_router.ocr_router)
