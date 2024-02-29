@@ -5,7 +5,10 @@ RUN apt -y update
 RUN apt -y upgrade
 RUN apt -y install sudo
 RUN apt -y install openssh-server
+
+# Environment variables
 ENV TERM=xterm-256color
+ENV ENVIRON=dev
 
 # Plugin services
 RUN apt -y install tesseract-ocr
