@@ -1,10 +1,8 @@
-from fastapi import APIRouter, Depends, HTTPException, status
+from fastapi import APIRouter
+from fastapi import Form
 from typing import Annotated
-from fastapi.security import OAuth2PasswordRequestForm
-from .schemas import User, UserInDB
-from .utils import verify_user, generate_oauth2_token
-from .utils import fake_users_db
-from .utils import fake_apikey_db
+from .utils import generate_apikey
+from app.db import users as users_db
 
 auth_router = APIRouter(prefix="/auth", tags=["auth"])
 
@@ -16,23 +14,39 @@ async def auth_readme():
     return {"text": "Hello world, from /auth module!"}
 
 
-@auth_router.post("/token", summary="Request OAuth2 token")
-async def request_oauth2_token(
-    form_data: Annotated[OAuth2PasswordRequestForm, Depends()]
-):
-    """API Endpoint to get OAuth2 Token.
+# @auth_router.post("/token", summary="Request OAuth2 token")
+# async def request_oauth2_token(
+#     form_data: Annotated[OAuth2PasswordRequestForm, Depends()]
+# ):
+#     """API Endpoint to get OAuth2 Token.
 
-    Implement for fun, currently there is no api endpoint requiring oauth2"""
+#     Implement for fun, currently there is no api endpoint requiring oauth2"""
 
-    user = verify_user(form_data.username, form_data.password, fake_users_db)
-    token = generate_oauth2_token(user)
+#     user = verify_user(form_data.username, form_data.password, fake_users_db)
+#     token = generate_oauth2_token(user)
 
-    # Provide access-token
-    return {"access_token": token, "token_type": "bearer"}
+#     # Provide access-token
+#     return {"access_token": token, "token_type": "bearer"}
 
 
 @auth_router.post("/api-key", summary="Request API-KEY")
-async def request_api_key():
+async def request_api_key(
+    username: Annotated[str, Form()], password: Annotated[str, Form()]
+):
     """API Endpoint to get API Key."""
+    user = users_db.verify_user(users_db.connector, username, password)
+    apikey = generate_apikey(user)
 
-    return "admin-123456-shouldbehashed"  # for now i just return an admin api key
+    return apikey
+
+
+@auth_router.post("/registration", summary="Register a user")
+async def register_account(
+    username: Annotated[str, Form()], password: Annotated[str, Form()]
+):
+    """Account registration API Endpoint."""
+
+    users_db.check_duplicate(users_db.connector, username)
+    users_db.create(users_db.connector, username, password)
+
+    return {"message": "Registration successfully"}
