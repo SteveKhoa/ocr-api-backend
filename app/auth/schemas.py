@@ -14,3 +14,11 @@ class User(BaseModel):
 
 class UserInDB(User):
     hashed_password: str
+
+
+# Currently duplicate but temporarily ignore it.
+# In the future I want to model the schemas based
+# on the specific domain, not copying and pasting
+# from FastAPI docs
+class VerifiedUser(User):
+    pass
