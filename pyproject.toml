@@ -1,0 +1,7 @@
+[project]
+name = "app"
+version = "0.1.0"
+description = "fastapi app"
+
+[tool.setuptools]
+py-modules = ["app"]

@@ -64,6 +64,12 @@ Type `pip install -r requirements/dev.txt`.
 
 You also need to install commit hooks: `pre-commit install --hook-type commit-msg`.
 
+It is also required to install `app/` directory as a Python package to allow global imports.  Type `pip install -e .`.
+
+> Read this for more info on global imports:
+> 
+> https://stackoverflow.com/questions/72294299/multiple-top-level-packages-discovered-in-a-flat-layout
+
 ### Done!
 
 You can start modifying the code now.
