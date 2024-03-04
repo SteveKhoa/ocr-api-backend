@@ -1,18 +1,16 @@
 """
-Authentication-related operations.
-
-Including OAuth2 and APIKey verification steps.
+API-Key utility functions
 """
 
 import base64
 from typing import Annotated
 from fastapi import Depends
 from fastapi.security import APIKeyHeader
-from .schemas import VerifiedUser
+from ..schemas import VerifiedUser
 import random
-from app.db.utils import hash_bytes
-from app.db.apikeys import check_duplicate, create, check_exist
 from app.db.utils import connector
+from sqlite3 import Connection
+from fastapi import HTTPException, status
 
 api_key_header = APIKeyHeader(name="Username-API-Key")
 
@@ -56,7 +54,58 @@ def generate_apikey(user: VerifiedUser) -> bytes:
 
 
 def verify_apikey(apikey: Annotated[str, Depends(api_key_header)]) -> str:
-    """Check validity of provided API-Key."""
+    """Check validity of provided API-Key.
+
+    ## Returns
+    `apikey` as str
+    """
     check_exist(connector, apikey)
 
     return apikey  # pass
+
+
+def check_duplicate(db_connection: Connection, apikey: str) -> bool:
+    """Check duplication of apikey on the database.
+
+    If duplication found, raise HTTPException 400
+    """
+
+    is_duplicate = False
+
+    QUERY_APIKEY = """SELECT * FROM apikey WHERE str=?"""
+
+    query_retval = db_connection.execute(QUERY_APIKEY, (apikey,))
+    retvals = query_retval.fetchall()
+
+    if len(retvals) > 0:  # duplicate apikey found
+        is_duplicate = True
+    else:
+        is_duplicate = False
+
+    return is_duplicate  # pass the check
+
+
+def create(db_connection: Connection, apikey: str) -> None:
+    """Create a database entry for apikey"""
+
+    CREATE_APIKEY = """INSERT INTO apikey VALUES (?)"""
+
+    # Note: raw apikey is stored to the database, no
+    # hash is performed.
+    db_connection.execute(CREATE_APIKEY, (apikey,))
+
+    return  # done procedure
+
+
+def check_exist(db_connection: Connection, apikey: str):
+    """Check if apikey exists on the database"""
+
+    QUERY_APIKEY = """SELECT * FROM apikey WHERE str=?"""
+
+    query_retval = db_connection.execute(QUERY_APIKEY, (apikey,))
+    retvals = query_retval.fetchall()
+
+    if len(retvals) <= 0:  # apikey not existed
+        raise HTTPException(status.HTTP_401_UNAUTHORIZED, detail="API-Key Invalid")
+
+    return  # pass the check

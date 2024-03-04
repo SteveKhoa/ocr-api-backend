@@ -1,15 +1,15 @@
 from fastapi import APIRouter
 from fastapi import Form, Depends
 from typing import Annotated
-from .utils import generate_apikey, verify_apikey
+from .utils import apikey as apikey_utils
+from .utils import user as user_utils
 from app.db.utils import connector as db_connector
-from app.db import users as users_db
 
 auth_router = APIRouter(prefix="/auth", tags=["auth"])
 
 
 @auth_router.get("/", summary="Greeting message of the module")
-async def auth_readme(apikey: Annotated[str, Depends(verify_apikey)]):
+async def auth_readme(apikey: Annotated[str, Depends(apikey_utils.verify_apikey)]):
     """Default greetings reponse when accessing auth module"""
 
     return {"text": "Hello world, from /auth module!"}
@@ -22,8 +22,8 @@ async def request_api_key(
     """API Endpoint to get API Key.
 
     New API Key generated on each of this request."""
-    user = users_db.verify_user(db_connector, username, password)
-    apikey = generate_apikey(user)
+    user = user_utils.verify_user(db_connector, username, password)
+    apikey = user_utils.generate_apikey(user)
 
     return {"apikey": apikey}
 
@@ -34,7 +34,7 @@ async def register_account(
 ):
     """Account registration API Endpoint."""
 
-    users_db.check_duplicate(db_connector, username)
-    users_db.create(db_connector, username, password)
+    user_utils.check_duplicate(db_connector, username)
+    user_utils.create(db_connector, username, password)
 
     return {"message": "Registration successfully"}

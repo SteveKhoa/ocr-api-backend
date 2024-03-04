@@ -1,4 +1,6 @@
-"""Users-related objects and operations on Database.
+"""
+User authentication & authorization utility
+functions.
 """
 
 from fastapi import HTTPException, status
@@ -7,8 +9,10 @@ from app.auth.schemas import VerifiedUser
 from app.db.utils import hash_bytes
 
 
-def check_duplicate(db_connection: Connection, username: str) -> None:
+def check_duplicate(db_connection: Connection, username: str) -> bool:
     """Check duplication of username in the Database"""
+
+    is_duplicate = False
 
     QUERY_USERNAME = """SELECT * FROM user WHERE username=?"""
 
@@ -16,9 +20,11 @@ def check_duplicate(db_connection: Connection, username: str) -> None:
     retvals = query_retval.fetchall()
 
     if len(retvals) > 0:  # duplicate username found
-        raise HTTPException(status.HTTP_400_BAD_REQUEST, detail="Username duplicated.")
+        is_duplicate = True
+    else:
+        is_duplicate = False
 
-    return
+    return is_duplicate
 
 
 def create(db_connection: Connection, username: str, password: str) -> None:
