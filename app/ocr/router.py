@@ -12,8 +12,8 @@ from io import BytesIO
 ocr_router = APIRouter(prefix="/ocr", tags=["ocr"])
 
 
-@ocr_router.get("/", summary="Greeting message of the module")
-async def ocr_readme(apikey: Annotated[str, Depends(verify_apikey)]):
+@ocr_router.get("/", summary="Greeting message of the module. Does not require API-Key")
+async def ocr_readme():
     """Greetings endpoint of the module."""
 
     return {"text": "Hello from /ocr module!"}
