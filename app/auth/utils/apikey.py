@@ -47,7 +47,11 @@ def generate_apikey(user: VerifiedUser) -> bytes:
     random_bytes = random.randbytes(16)  # 128 random bits
     apikey_bytes = base64.b64encode(random_bytes)  # bytes to bytes
     apikey = apikey_bytes.decode("ascii")  # returns string
-    check_duplicate(connector, apikey)
+    is_duplicate = check_duplicate(connector, apikey)
+
+    if is_duplicate:
+        raise HTTPException(status.HTTP_400_BAD_REQUEST, detail="Generated API-Key is a duplicate.")
+
     create(connector, apikey)
 
     return apikey
@@ -59,15 +63,21 @@ def verify_apikey(apikey: Annotated[str, Depends(api_key_header)]) -> str:
     ## Returns
     `apikey` as str
     """
-    check_exist(connector, apikey)
+    is_duplicate = check_duplicate(connector, apikey)
 
-    return apikey  # pass
+    if not is_duplicate:
+        raise HTTPException(status.HTTP_401_UNAUTHORIZED, detail="Provided API-Key is not valid.")
+
+    return apikey
 
 
 def check_duplicate(db_connection: Connection, apikey: str) -> bool:
     """Check duplication of apikey on the database.
 
-    If duplication found, raise HTTPException 400
+    ## Return
+    `True` if duplicate entry is found.
+
+    `False` if no duplicate entry.
     """
 
     is_duplicate = False
@@ -95,17 +105,3 @@ def create(db_connection: Connection, apikey: str) -> None:
     db_connection.execute(CREATE_APIKEY, (apikey,))
 
     return  # done procedure
-
-
-def check_exist(db_connection: Connection, apikey: str):
-    """Check if apikey exists on the database"""
-
-    QUERY_APIKEY = """SELECT * FROM apikey WHERE str=?"""
-
-    query_retval = db_connection.execute(QUERY_APIKEY, (apikey,))
-    retvals = query_retval.fetchall()
-
-    if len(retvals) <= 0:  # apikey not existed
-        raise HTTPException(status.HTTP_401_UNAUTHORIZED, detail="API-Key Invalid")
-
-    return  # pass the check
