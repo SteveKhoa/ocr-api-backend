@@ -1,33 +1,10 @@
 """Users-related objects and operations on Database.
-
-Interacting with `user` database by importing `connector`
-from this module and use the functions defined in this module.
 """
 
-import sqlite3
-import hashlib
 from fastapi import HTTPException, status
-from typing import Annotated
 from sqlite3 import Connection
 from app.auth.schemas import VerifiedUser
-
-USERS_DB_PATH = "/workspaces/ocr-api-backend/app/db/users.db"
-
-connector = sqlite3.connect(USERS_DB_PATH)
-
-
-def hash(message: str) -> tuple[str, int]:
-    """Hash a message into a string digest.
-
-    ## Return
-    `(digest, length)` where, `digest` is the hashed message and `length` is the length (in bytes) of the digest.
-    """
-    encoded_message = message.encode("utf-8")
-    hash_obj = hashlib.md5(encoded_message)
-    digest = hash_obj.digest()
-    length = len(digest)
-
-    return (digest, length)
+from app.db.utils import hash_bytes
 
 
 def check_duplicate(db_connection: Connection, username: str) -> None:
@@ -47,14 +24,14 @@ def check_duplicate(db_connection: Connection, username: str) -> None:
 def create(db_connection: Connection, username: str, password: str) -> None:
     """Create a user in the Database"""
 
-    CREATE_USER = (
-        """INSERT INTO user (userid, username, hashed_password) VALUES (?, ?, ?)"""
-    )
+    CREATE_USER = """INSERT INTO user (username, hashed_password) VALUES (?, ?)"""
 
-    userid, _ = hash(username)
-    hashed_password, _ = hash(password)
+    password_binary = password.encode("ascii")
+    hashed_bytes = hash_bytes(password_binary)
+    hashed_password = hashed_bytes.decode("ascii")
 
-    db_connection.execute(CREATE_USER, (userid, username, hashed_password))
+    db_connection.execute(CREATE_USER, (username, hashed_password))
+    db_connection.commit()
 
     return
 
@@ -73,12 +50,12 @@ def verify_user(
 
     QUERY_USER = """SELECT * FROM user WHERE username=? AND hashed_password=?"""
 
-    hashed_password, _ = hash(password)
+    password_binary = password.encode("ascii")
+    hashed_bytes = hash_bytes(password_binary)
+    hashed_password = hashed_bytes.decode("ascii")
 
     query_retval = db_connection.execute(QUERY_USER, (username, hashed_password))
     retvals = query_retval.fetchall()
-
-    print(retvals)
 
     if len(retvals) <= 0:
         raise HTTPException(
@@ -86,7 +63,7 @@ def verify_user(
         )
 
     raw_user = retvals[0]
-    user_dict = {"username": raw_user[1]}
+    user_dict = {"username": raw_user[0]}
     verified_user = VerifiedUser(**user_dict)
 
     return verified_user
