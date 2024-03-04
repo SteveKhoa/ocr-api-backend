@@ -9,6 +9,7 @@ RUN apt -y install openssh-server
 # Environment variables
 ENV TERM=xterm-256color
 ENV ENVIRON=dev
+ENV DB_URL="/workspaces/ocr-api-backend/app/db/database.db"
 
 # Plugin services
 RUN apt -y install tesseract-ocr
