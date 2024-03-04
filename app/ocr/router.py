@@ -5,7 +5,7 @@ from typing import Annotated
 from .tesseract.engine import TesseractOCR
 from .tesseract.lang import DefaultLangs
 from .tesseract.preprocess import load
-from app.auth.utils import verify_apikey
+from app.auth.utils.apikey import verify_apikey
 from io import BytesIO
 
 

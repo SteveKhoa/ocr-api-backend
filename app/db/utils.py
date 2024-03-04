@@ -5,17 +5,10 @@ Common utilities for Database operations
 import sqlite3
 import hashlib
 import base64
+import os
 
-DB_PATH = "/workspaces/ocr-api-backend/app/db/database.db"
+connector = sqlite3.connect(os.environ.get("DB_URL"))
 
-connector = sqlite3.connect(DB_PATH)
-
-DROP_TABLE_USER = """
-DROP TABLE IF EXISTS user"""
-
-DROP_TABLE_APIKEY = """
-DROP TABLE IF EXISTS apikey
-"""
 
 CREATE_USER_TABLE_QUERY = """
 CREATE TABLE user(  
@@ -24,11 +17,16 @@ CREATE TABLE user(
 )
 """
 
+DROP_TABLE_USER = """DROP TABLE IF EXISTS user"""
+
+
 CREATE_APIKEY_TABLE = """
 CREATE TABLE apikey(
     str char(16)
 )
 """
+
+DROP_TABLE_APIKEY = """DROP TABLE IF EXISTS apikey"""
 
 
 def hash_bytes(message: bytes) -> tuple[bytes, int]:
