@@ -7,16 +7,17 @@ from .tesseract.lang import DefaultLangs
 from .tesseract.preprocess import load
 from app.auth.utils.apikey import verify_apikey
 from io import BytesIO
+from app.response import Text
 
 
 ocr_router = APIRouter(prefix="/ocr", tags=["ocr"])
 
 
-@ocr_router.get("/", summary="Greeting message of the module. Does not require API-Key")
-async def ocr_readme():
+@ocr_router.get("/", summary="Greeting message of the module.")
+async def ocr_readme(apikey: Annotated[str, Depends(verify_apikey)]):
     """Greetings endpoint of the module."""
 
-    return {"text": "Hello from /ocr module!"}
+    return Text("Hello from /ocr module!")
 
 
 @ocr_router.post("/extraction", summary="Extract text from uploaded image")
@@ -32,4 +33,5 @@ async def extract(
 
     image = load(BytesIO(file))
     text = tess.read(image)
-    return {"text": text}
+    
+    return Text(text)
