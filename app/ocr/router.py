@@ -1,37 +1,34 @@
 from fastapi import APIRouter
 from fastapi import File, Depends
-from fastapi import HTTPException
+from fastapi import HTTPException, status
 from typing import Annotated
-from .tesseract.engine import TesseractOCR
-from .tesseract.lang import DefaultLangs
-from .tesseract.preprocess import load
+from fastapi import Query
 from app.auth.utils.apikey import verify_apikey
-from io import BytesIO
-from app.response import Text
+import app.ocr.services
+
+import app.responses
 
 
 ocr_router = APIRouter(prefix="/ocr", tags=["ocr"])
 
 
-@ocr_router.get("/", summary="Greeting message of the module.")
-async def ocr_readme(apikey: Annotated[str, Depends(verify_apikey)]):
-    """Greetings endpoint of the module."""
-
-    return Text("Hello from /ocr module!")
-
-
-@ocr_router.post("/extraction", summary="Extract text from uploaded image")
-async def extract(
-    file: Annotated[bytes, File()], apikey: Annotated[str, Depends(verify_apikey)]
+@ocr_router.post(
+    "",
+    summary="Request Optical Character Recognition service.",
+)
+def read_post_image(
+    apikey: Annotated[str, Depends(verify_apikey)],
+    file: Annotated[bytes, File()],
+    query: Annotated[list[str], Query()],
 ):
-    """String extraction service.
-
-    This endpoint only accepts `multipart/form-data` uploaded bytes
-    """
-
-    tess = TesseractOCR(DefaultLangs.eng_fast)
-
-    image = load(BytesIO(file))
-    text = tess.read(image)
-    
-    return Text(text)
+    match query:
+        case "all":
+            text_data = app.ocr.services.data_from(file)
+            return app.responses.Response(status="success", data=text_data)
+        case "tokens":
+            return app.ocr.services.tokens_from(file)
+        case _:
+            raise HTTPException(
+                status_code=status.HTTP_400_BAD_REQUEST,
+                detail="Unsupported query parameter query.",
+            )

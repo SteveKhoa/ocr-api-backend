@@ -1,41 +1,47 @@
 from fastapi import APIRouter
-from fastapi import Form, Depends
+from fastapi import Form, Depends, Query
+from fastapi import HTTPException, status
 from typing import Annotated
 from .utils import apikey as apikey_utils
 from .utils import user as user_utils
 from app.db.utils import connector as db_connector
-from app.response import Message, Text, Response
+from app.responses import Message, Text, Response
+import app.auth.account
 
-auth_router = APIRouter(prefix="/auth", tags=["auth"])
-
-
-@auth_router.get("/", summary="Greeting message of the module")
-async def auth_readme(apikey: Annotated[str, Depends(apikey_utils.verify_apikey)]):
-    """Default greetings reponse when accessing auth module"""
-
-    return Text("Hello world, from /auth module!")
+auth_router = APIRouter(prefix="", tags=["auth"])
 
 
-@auth_router.post("/api-key", summary="Request API-KEY")
-async def request_api_key(
-    username: Annotated[str, Form()], password: Annotated[str, Form()]
+@auth_router.get("/api-key", summary="Request API-KEY")
+async def read_post_apikey(
+    username: Annotated[str, Form()],
+    password: Annotated[str, Form()],
 ):
-    """API Endpoint to get API Key.
-
-    New API Key generated on each of this request."""
     user = user_utils.verify_user(db_connector, username, password)
-    apikey = user_utils.generate_apikey(user)
+    apikey = apikey_utils.generate_apikey(user)
 
     return Response(status="success", data={"apikey": apikey})
 
 
-@auth_router.post("/registration", summary="Register a user")
-async def register_account(
-    username: Annotated[str, Form()], password: Annotated[str, Form()]
+@auth_router.post("/account", summary="Request to register/login/")
+def read_post_account(
+    action: Annotated[list[str], Query()],
+    username: Annotated[str, Form()] | None = None,
+    password: Annotated[str, Form()] | None = None,
 ):
-    """Account registration API Endpoint."""
-
-    user_utils.check_duplicate(db_connector, username)
-    user_utils.create(db_connector, username, password)
-
-    return Message("Registration successfully")
+    match action:
+        case "register":
+            if username is None or password is None:
+                raise HTTPException(
+                    status.HTTP_400_BAD_REQUEST,
+                    detail="This query parameter action requires Form data username and password.",
+                )
+            
+            app.auth.account.register_account(
+                username,
+                password,
+            )
+        case _:
+            raise HTTPException(
+                status_code=status.HTTP_400_BAD_REQUEST,
+                detail="Unsupported query parameter action.",
+            )

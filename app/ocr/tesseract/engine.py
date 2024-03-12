@@ -19,10 +19,12 @@ class TesseractOCR:
     def __init__(self, tesseract_lang: lang.Lang):
         self._lang = tesseract_lang
 
-    def read(self, np_image: np.ndarray) -> str:
-        """Extract text from input image
-
-        This method assumes the input image contains uniform block of text."""
+    def read(self, np_image: np.ndarray) -> dict:
+        """Extract textual data from image.
+        
+        ## Return
+        `data_dict`: dictionary of textual data
+        """
 
         # Load image
         image = np_image
@@ -40,6 +42,5 @@ class TesseractOCR:
 
         # Postprocessing
         dataframe = postprocess.correct_text(dataframe)
-        text = postprocess.get_text(dataframe)
-
-        return text
+        data_dict = dataframe.to_dict()
+        return data_dict
