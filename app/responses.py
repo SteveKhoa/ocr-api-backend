@@ -25,13 +25,13 @@ class Response:
     def __init__(self, status: Literal["success", "fail", "error"], data: dict):
         self.status = status
         self.data = data
-    
+
     def to_json(self) -> dict:
         return {"status": self.status, "data": self.data}
-    
+
     def to_data(self):
         return self.data
-    
+
     def get_key(self):
         return "response"
 
@@ -62,7 +62,10 @@ class Collection(Response):
 
 class Composite(Response):
     def __init__(self, *responses: Response):
-        responses_data = [{response_data.get_key(): response_data.to_data()} for response_data in responses]
+        responses_data = [
+            {response_data.get_key(): response_data.to_data()}
+            for response_data in responses
+        ]
 
         merged_dict = {}
         for data_dict in responses_data:

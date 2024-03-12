@@ -35,7 +35,7 @@ def read_post_account(
                     status.HTTP_400_BAD_REQUEST,
                     detail="This query parameter action requires Form data username and password.",
                 )
-            
+
             app.auth.account.register_account(
                 username,
                 password,

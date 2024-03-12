@@ -21,7 +21,7 @@ class TesseractOCR:
 
     def read(self, np_image: np.ndarray) -> dict:
         """Extract textual data from image.
-        
+
         ## Return
         `data_dict`: dictionary of textual data
         """

@@ -15,3 +15,9 @@ repos:
         entry: '^(chore|test|feat|fix|build|docs|refactor)!?:'
         args: [--multiline, --negate]
         stages: [commit-msg]
+
+    -   id: check-python-format
+        name: Checking python format
+        language: system
+        entry: bash -c 'black . --include "\.py$" --check' --
+        stages: [pre-commit]
