@@ -3,6 +3,7 @@ Defines Response JSON format
 """
 
 from typing import Literal
+from fastapi import status as http_status
 
 
 class Response:
@@ -10,6 +11,13 @@ class Response:
 
     This does not replace the usage of FastAPI's standard exceptions.
 
+    ## Schema
+    ```json
+    {
+        "status": <HTTP STATUS>,
+        "data": <RESPONSE DATA>
+    }
+    ```
     ## Params
     `status`: can take three possible values
         - `success`, all went well
@@ -22,7 +30,7 @@ class Response:
     For more details, see https://github.com/omniti-labs/jsend
     """
 
-    def __init__(self, status: Literal["success", "fail", "error"], data: dict):
+    def __init__(self, status: int, data: dict):
         self.status = status
         self.data = data
 
@@ -38,7 +46,7 @@ class Response:
 
 class Text(Response):
     def __init__(self, text: str):
-        super().__init__(status="success", data=text)
+        super().__init__(status=http_status.HTTP_200_OK, data=text)
 
     def get_key(self):
         return "text"
@@ -46,18 +54,18 @@ class Text(Response):
 
 class Message(Response):
     def __init__(self, message: str):
-        super().__init__(status="success", data=message)
+        super().__init__(status=http_status.HTTP_200_OK, data=message)
 
     def get_key(self):
-        return "text"
+        return "msg"
 
 
 class Collection(Response):
     def __init__(self, collection: list[str]):
-        super().__init__(status="success", data=collection)
+        super().__init__(status=http_status.HTTP_200_OK, data=collection)
 
     def get_key(self):
-        return "list"
+        return "collection"
 
 
 class Composite(Response):
@@ -71,4 +79,4 @@ class Composite(Response):
         for data_dict in responses_data:
             merged_dict.update(data_dict)
 
-        super().__init__(status="success", data=merged_dict)
+        super().__init__(status=http_status.HTTP_200_OK, data=merged_dict)
