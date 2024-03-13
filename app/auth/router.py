@@ -4,9 +4,10 @@ from fastapi import HTTPException, status
 from typing import Annotated
 from .utils import apikey as apikey_utils
 from .utils import user as user_utils
-from app.db.utils import connector as db_connector
+from app.db.connectors import connector as db_connector
 from app.responses import Message, Text, Response
 import app.auth.account
+import app.exceptions
 
 auth_router = APIRouter(prefix="", tags=["auth"])
 
@@ -31,17 +32,21 @@ def read_post_account(
     match action:
         case "register":
             if username is None or password is None:
-                raise HTTPException(
-                    status.HTTP_400_BAD_REQUEST,
-                    detail="This query parameter action requires Form data username and password.",
-                )
+                raise app.exceptions.MissingBody("username", "password")
+
+            app.auth.account.register_account(
+                username,
+                password,
+            )
+
+            return
+        case "login":
+            if username is None or password is None:
+                raise app.exceptions.MissingBody(username, password)
 
             app.auth.account.register_account(
                 username,
                 password,
             )
         case _:
-            raise HTTPException(
-                status_code=status.HTTP_400_BAD_REQUEST,
-                detail="Unsupported query parameter action.",
-            )
+            raise app.exceptions.UnsupportedQueryParam("action")

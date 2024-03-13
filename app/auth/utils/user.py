@@ -6,7 +6,7 @@ functions.
 from fastapi import HTTPException, status
 from sqlite3 import Connection
 from app.auth.schemas import VerifiedUser
-from app.db.utils import hash_bytes
+from app.db.security import hash_bytes
 
 
 def check_duplicate(db_connection: Connection, username: str) -> bool:

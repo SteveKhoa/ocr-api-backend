@@ -8,9 +8,10 @@ from fastapi import Depends
 from fastapi.security import APIKeyHeader
 from ..schemas import VerifiedUser
 import random
-from app.db.utils import connector
+from app.db.connectors import connector
 from sqlite3 import Connection
 from fastapi import HTTPException, status
+import app.exceptions
 
 api_key_header = APIKeyHeader(name="Username-API-Key")
 
@@ -50,9 +51,7 @@ def generate_apikey(user: VerifiedUser) -> bytes:
     is_duplicate = check_duplicate(connector, apikey)
 
     if is_duplicate:
-        raise HTTPException(
-            status.HTTP_400_BAD_REQUEST, detail="Generated API-Key is a duplicate."
-        )
+        raise app.exceptions.DuplicateDatabaseEntry("apikey")
 
     create(connector, apikey)
 
@@ -68,9 +67,7 @@ def verify_apikey(apikey: Annotated[str, Depends(api_key_header)]) -> str:
     is_duplicate = check_duplicate(connector, apikey)
 
     if not is_duplicate:
-        raise HTTPException(
-            status.HTTP_401_UNAUTHORIZED, detail="Provided API-Key is not valid."
-        )
+        raise app.exceptions.DatabaseEntryNotExisted("apikey")
 
     return apikey
 
