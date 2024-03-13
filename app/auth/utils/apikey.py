@@ -11,7 +11,7 @@ import random
 from app.db.connectors import connector
 from sqlite3 import Connection
 from fastapi import HTTPException, status
-import app.exceptions
+import app._exceptions
 
 api_key_header = APIKeyHeader(name="Username-API-Key")
 
@@ -51,7 +51,7 @@ def generate_apikey(user: VerifiedUser) -> bytes:
     is_duplicate = check_duplicate(connector, apikey)
 
     if is_duplicate:
-        raise app.exceptions.DuplicateDatabaseEntry("apikey")
+        raise app._exceptions.DuplicateDatabaseEntry("apikey")
 
     create(connector, apikey)
 
@@ -67,7 +67,7 @@ def verify_apikey(apikey: Annotated[str, Depends(api_key_header)]) -> str:
     is_duplicate = check_duplicate(connector, apikey)
 
     if not is_duplicate:
-        raise app.exceptions.DatabaseEntryNotExisted("apikey")
+        raise app._exceptions.DatabaseEntryNotExisted("apikey")
 
     return apikey
 

@@ -5,7 +5,7 @@ from app.ocr.tesseract.engine import TesseractOCR
 from app.ocr.tesseract.lang import DefaultLangs
 from fastapi import File
 
-import app.responses
+import app._responses
 
 eng_tess = TesseractOCR(DefaultLangs.eng_fast)
 

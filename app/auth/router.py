@@ -5,9 +5,9 @@ from typing import Annotated
 from .utils import apikey as apikey_utils
 from .utils import user as user_utils
 from app.db.connectors import connector as db_connector
-from app.responses import Message, Text, Response
+from app._responses import Message, Text, Response
 import app.auth.account
-import app.exceptions
+import app._exceptions
 
 auth_router = APIRouter(prefix="", tags=["auth"])
 
@@ -32,7 +32,7 @@ def read_post_account(
     match action:
         case "register":
             if username is None or password is None:
-                raise app.exceptions.MissingBody("username", "password")
+                raise app._exceptions.MissingBody("username", "password")
 
             app.auth.account.register_account(
                 username,
@@ -42,11 +42,11 @@ def read_post_account(
             return
         case "login":
             if username is None or password is None:
-                raise app.exceptions.MissingBody(username, password)
+                raise app._exceptions.MissingBody(username, password)
 
             app.auth.account.register_account(
                 username,
                 password,
             )
         case _:
-            raise app.exceptions.UnsupportedQueryParam("action")
+            raise app._exceptions.UnsupportedQueryParam("action")

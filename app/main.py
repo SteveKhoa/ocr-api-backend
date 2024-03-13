@@ -1,7 +1,7 @@
 from fastapi import FastAPI
 from .auth import router as auth_router
 from .ocr import router as ocr_router
-from app.responses import Message
+from app._responses import Message
 
 app = FastAPI()
 

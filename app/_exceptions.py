@@ -1,6 +1,6 @@
 from fastapi import HTTPException, status
 from app.main import app
-import app.responses
+import app._responses
 from typing import List
 
 
@@ -9,7 +9,7 @@ def response_exception(exception: HTTPException):
     http_status = exception.status_code
     detail = exception.detail
 
-    return app.responses.Response(http_status, detail)
+    return app._responses.Response(http_status, detail)
 
 
 class UnsupportedQueryParam(HTTPException):
