@@ -1,5 +1,5 @@
 from .utils import user as user_utils
-from app.db.security import connector as db_connector
+from app.db.connectors import connector as db_connector
 from app._responses import Message
 
 
