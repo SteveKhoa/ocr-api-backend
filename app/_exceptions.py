@@ -1,9 +1,11 @@
-from fastapi import HTTPException, status
+from fastapi import HTTPException, status, Request
 import app._responses
 from typing import List
 
 
-def response_exception(exception: HTTPException):
+def reponse_http_exception(
+    request: Request, exception: HTTPException
+) -> app._responses.Response:
     http_status = exception.status_code
     detail = exception.detail
 

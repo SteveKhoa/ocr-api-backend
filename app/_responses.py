@@ -2,8 +2,9 @@
 Defines Response JSON format
 """
 
-from typing import Literal
+from typing import Any, Literal
 from fastapi import status as http_status
+import fastapi.responses
 
 
 class Response:
@@ -33,6 +34,11 @@ class Response:
     def __init__(self, status: int, data: dict):
         self.status = status
         self.data = data
+
+    async def __call__(self, scope, receive, send) -> None:
+        response = fastapi.responses.JSONResponse(self.to_json(), self.status)
+
+        await response(scope, receive, send)
 
     def to_json(self) -> dict:
         return {"status": self.status, "data": self.data}
