@@ -8,8 +8,10 @@ from app.db.connectors import connector as db_connector
 from app._responses import Message, Text, Response
 import app.auth.account
 import app._exceptions
+from app.main import app
 
 auth_router = APIRouter(prefix="", tags=["auth"])
+app.include_router(auth_router)
 
 
 @auth_router.get("/api-key", summary="Request API-KEY")

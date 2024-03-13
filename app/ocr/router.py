@@ -7,9 +7,11 @@ from app.auth.utils.apikey import verify_apikey
 import app.ocr.services
 
 import app._responses
+from app.main import app
 
 
 ocr_router = APIRouter(prefix="/ocr", tags=["ocr"])
+app.include_router(ocr_router)
 
 
 @ocr_router.post(
