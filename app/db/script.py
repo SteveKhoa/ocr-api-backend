@@ -2,12 +2,9 @@
 Common utilities for Database operations
 """
 
-import sqlite3
 import hashlib
 import base64
-import os
-
-connector = sqlite3.connect(os.environ.get("DB_URL"))
+from app.db.connectors import connector
 
 
 CREATE_USER_TABLE_QUERY = """
