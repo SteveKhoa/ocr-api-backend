@@ -31,6 +31,6 @@ RUN echo 'admin:123' | chpasswd
 # Start SSH service
 RUN service ssh start
 
-EXPOSE 22
+EXPOSE 22 8000
 
 CMD ["/usr/sbin/sshd","-D"]
