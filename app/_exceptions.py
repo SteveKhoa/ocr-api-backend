@@ -1,10 +1,8 @@
 from fastapi import HTTPException, status
-from app.main import app
 import app._responses
 from typing import List
 
 
-@app.exception_handler(HTTPException)
 def response_exception(exception: HTTPException):
     http_status = exception.status_code
     detail = exception.detail
