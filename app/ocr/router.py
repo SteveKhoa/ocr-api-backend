@@ -26,7 +26,8 @@ def read_post_image(
             text_data = app.ocr.services.data_from(file)
             return app.responses.Response(status="success", data=text_data)
         case "tokens":
-            return app.ocr.services.tokens_from(file)
+            tokens = app.ocr.services.tokens_from(file)
+            return app.responses.Collection(tokens)
         case _:
             raise HTTPException(
                 status_code=status.HTTP_400_BAD_REQUEST,

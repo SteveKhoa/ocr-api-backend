@@ -16,7 +16,7 @@ def tokens_from(file: Annotated[bytes, File()]):
     tokens_dict = text_data["text"]
     tokens = list(tokens_dict.values())
 
-    return app.responses.Collection(tokens)
+    return tokens
 
 
 def data_from(file: Annotated[bytes, File()]):
