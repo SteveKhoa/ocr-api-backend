@@ -1,16 +1,15 @@
 """
-Defines Response JSON format
+Common JSON Response formats for OCR-API
 """
 
-from typing import Any, Literal
+from typing import Any
 from fastapi import status as http_status
 import fastapi.responses
 
 
 class Response:
-    """Response JSON format, base class.
-
-    This does not replace the usage of FastAPI's standard exceptions.
+    """Response JSON format, base class. Use this when any other formats
+    are not sufficient to describe the intention.
 
     ## Schema
     ```json
@@ -51,6 +50,8 @@ class Response:
 
 
 class Text(Response):
+    """Plain text string, deliver no server's intention"""
+
     def __init__(self, text: str):
         super().__init__(status=http_status.HTTP_200_OK, data=text)
 
@@ -59,6 +60,8 @@ class Text(Response):
 
 
 class Message(Response):
+    """A message, delivering an explicit server intention"""
+
     def __init__(self, message: str):
         super().__init__(status=http_status.HTTP_200_OK, data=message)
 
@@ -67,6 +70,22 @@ class Message(Response):
 
 
 class Collection(Response):
+    """A list of strings
+
+    ## Schema
+    ```json
+    {
+        "status": 200,
+        "data": [
+            <entry01>,
+            <entry02>,
+            <entry03>,
+            ...
+        ]
+    }
+    ```
+    """
+
     def __init__(self, collection: list[str]):
         super().__init__(status=http_status.HTTP_200_OK, data=collection)
 
@@ -74,7 +93,37 @@ class Collection(Response):
         return "collection"
 
 
+class AccessToken(Response):
+    """String representing access token"""
+
+    def __init__(self, token: str):
+        super().__init__(status=http_status.HTTP_200_OK, data=token)
+
+    def get_key(self):
+        return "access_token"
+
+
 class Composite(Response):
+    """Composite of many `Response` formats.
+
+    ## Example
+    ```json
+    {
+        "status": 200,
+        "data": {
+            "access_token": "123456",
+            "collection": [
+                1,
+                2,
+                3
+            ],
+            "msg": "an example",
+            ...
+        }
+    }
+    ```
+    """
+
     def __init__(self, *responses: Response):
         responses_data = [
             {response_data.get_key(): response_data.to_data()}

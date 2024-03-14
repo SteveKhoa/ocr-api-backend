@@ -42,7 +42,34 @@ class DuplicateDatabaseEntry(HTTPException):
 class DatabaseEntryNotExisted(HTTPException):
     def __init__(self, *entries: List[str]) -> None:
         http_status = status.HTTP_400_BAD_REQUEST
-        detail = f"Invalid entry, or entry does not exist: {entries}."
+        detail = f"Requested data not existed or invalid: {entries}."
+        headers = None
+
+        super().__init__(http_status, detail, headers)
+
+
+class InvalidJWTSignature(HTTPException):
+    def __init__(self):
+        http_status = status.HTTP_401_UNAUTHORIZED
+        detail = f"JWT is invalid, or expired."
+        headers = None
+
+        super().__init__(http_status, detail, headers)
+
+
+class UndefinedJWTError(HTTPException):
+    def __init__(self, msg: str):
+        http_status = status.HTTP_401_UNAUTHORIZED
+        detail = f"{msg}"
+        headers = None
+
+        super().__init__(http_status, detail, headers)
+
+
+class InvalidData(HTTPException):
+    def __init__(self, details: str):
+        http_status = status.HTTP_400_BAD_REQUEST
+        detail = f"Invalid or unsupported data: {details}"
         headers = None
 
         super().__init__(http_status, detail, headers)
