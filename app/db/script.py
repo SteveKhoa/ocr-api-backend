@@ -5,6 +5,7 @@ Common utilities for Database operations
 import hashlib
 import base64
 from app.db.connectors import connector
+import os
 
 
 CREATE_USER_TABLE_QUERY = """
@@ -23,36 +24,41 @@ CREATE TABLE apikey(
 )
 """
 
+GET_TABLE_NAME = """
+SELECT name FROM sqlite_master WHERE type='table' AND name=?
+"""
+
 DROP_TABLE_APIKEY = """DROP TABLE IF EXISTS apikey"""
 
 
-def hash_bytes(message: bytes) -> tuple[bytes, int]:
-    """Hash a message into a raw bytes digest.
+def initialize_database():
+    cursor = connector.cursor()
 
-    ## Return
-    `digest` where, `digest` is the hashed message (as bytes).
+    query = connector.execute(GET_TABLE_NAME, ("user",))
+    tbl_user_exist = bool(query.fetchall())
+    query = connector.execute(GET_TABLE_NAME, ("apikey",))
+    tbl_apikey_exist = bool(query.fetchall())
+
+    if not tbl_user_exist:
+        cursor.execute(CREATE_USER_TABLE_QUERY)
+
+    if not tbl_apikey_exist:
+        cursor.execute(CREATE_APIKEY_TABLE)
+
+    connector.commit()
+
+    print("Database initialized.")
+
+
+def delete_database():
     """
-    hash_obj = hashlib.md5(message)
-    digest = hash_obj.digest()
-    digest = base64.b64encode(digest)  # convert to byte-safe bytestring
-
-    return digest
-
-
-def main():
-    """Execute initial scripts for database initialization
-
-    ## WARNING
-    This will delete existsing database tables and re-initialize
-    with a completely fresh database.
+    WARNING: this will delete all tables and there will be no
+    look-back on this one.
     """
     cursor = connector.cursor()
     cursor.execute(DROP_TABLE_USER)
     cursor.execute(DROP_TABLE_APIKEY)
-    cursor.execute(CREATE_USER_TABLE_QUERY)
-    cursor.execute(CREATE_APIKEY_TABLE)
-    connector.commit()
 
 
 if __name__ == "__main__":
-    main()
+    delete_database()
