@@ -13,9 +13,8 @@ if __name__ == "__main__":
             uvicorn.run(
                 "app.main:app",
                 host="127.0.0.1",
-                timeout_keep_alive=0,
                 log_level="trace",
-                reload=False,
+                reload=True,
             )
         case "prod":
             print("Not implemented....sorry")
