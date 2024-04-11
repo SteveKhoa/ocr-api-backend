@@ -44,7 +44,6 @@ class Lang:
             # memory.
             # https://stackoverflow.com/questions/16694907/download-large-file-in-python-with-requests
             with requests.get(self.__source, stream=True) as request:
-
                 if request.status_code != 200:
                     raise ValueError("{} was not a valid URL.".format(self.__source))
 

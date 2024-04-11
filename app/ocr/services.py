@@ -11,7 +11,6 @@ eng_tess = TesseractOCR(DefaultLangs.eng_fast)
 
 
 def tokens_from(file: Annotated[bytes, File()]):
-
     text_data = data_from(file)
     tokens_dict = text_data["text"]
     tokens = list(tokens_dict.values())

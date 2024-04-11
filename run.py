@@ -7,7 +7,6 @@ import os
 environ = os.environ.get("ENVIRON")
 
 if __name__ == "__main__":
-
     match environ:
         case "dev":
             uvicorn.run(

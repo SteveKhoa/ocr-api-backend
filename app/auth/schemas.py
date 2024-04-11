@@ -39,7 +39,6 @@ class VerifiedUser(User):
 
     @field_validator("access_token")
     def validate_access_token(cls, access_token):
-
         JWT_PATTERN = r"(^[A-Za-z0-9-_]+\.[A-Za-z0-9-_]+\.[A-Za-z0-9-_]+$)"
         if len(re.findall(pattern=JWT_PATTERN)) <= 0:
             raise app._exceptions.InvalidData("invalid JWT pattern.")
