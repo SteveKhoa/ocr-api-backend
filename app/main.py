@@ -1,7 +1,7 @@
 from fastapi import FastAPI
 from fastapi import HTTPException
-from .auth import router as auth_router
-from .ocr import router as ocr_router
+from app.auth import router as auth_router
+from app.ocr import router as ocr_router
 from app._responses import Message
 from app._exceptions import reponse_http_exception
 from app._config import lifespan
