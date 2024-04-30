@@ -1,7 +1,7 @@
 [project]
 name = "app"
 version = "0.1.0"
-description = "fastapi app"
+description = "Self-referencing module"
 
 [tool.setuptools]
 py-modules = ["app"]
