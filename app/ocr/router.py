@@ -1,34 +1,51 @@
 from fastapi import APIRouter
-from fastapi import File, Depends
-from fastapi import HTTPException, status
-from typing import Annotated
-from fastapi import Query
-from app.auth.utils.apikey import verify_apikey
-import app.ocr.services
+from app.ocr.schemas.RequestBody import OCRLineRequestBody, OCRParagraphRequestBody
+import app.ocr.controller
+import app.responses
+from app.ocr.schemas.ImageWrappers import ImageRegion, SourceImage
 
-import app._responses
+router = APIRouter(prefix="/ocr", tags=["ocr"])
 
 
-ocr_router = APIRouter(prefix="/ocr", tags=["ocr"])
+@router.post("/line")
+def read_ocr_line(req: OCRLineRequestBody):
+    ocr_lines = app.ocr.controller.query_lines(
+        image=SourceImage(req.image.base64),
+        pattern=req.target.pattern,
+        pivot_pattern=req.pivot.pattern,
+        tightness=req.pivot.tightness,
+        region=(
+            ImageRegion(tuple(req.image.region.split(" ")))
+            if req.image.region is not None
+            else None
+        ),
+    )
+    text_lines = [ocr_line.text_line for ocr_line in ocr_lines]
+
+    return app.responses.Collection(
+        [app.responses.Text(text_line) for text_line in text_lines]
+    )
 
 
-@ocr_router.post(
-    "",
-    summary="Request Optical Character Recognition service.",
-)
-def read_post_image(
-    file: Annotated[bytes, File()],
-    query: Annotated[list[str], Query()],
-):
-    match query:
-        case "all":
-            text_data = app.ocr.services.data_from(file)
-            return app._responses.Response(status="success", data=text_data)
-        case "tokens":
-            tokens = app.ocr.services.tokens_from(file)
-            return app._responses.Collection(tokens)
-        case _:
-            raise HTTPException(
-                status_code=status.HTTP_400_BAD_REQUEST,
-                detail="Unsupported query parameter query.",
+@router.post("/paragraph")
+def read_ocr_paragraph(req: OCRParagraphRequestBody):
+    ocr_paragraphs = app.ocr.controller.query_paragraphs(
+        image=SourceImage(req.image.base64),
+        pattern=req.target.pattern,
+        region=(
+            ImageRegion(tuple(req.image.region.split(" ")))
+            if req.image.region is not None
+            else None
+        ),
+    )
+
+    paragraphs = [ocr_paragraph.get_textlines() for ocr_paragraph in ocr_paragraphs]
+
+    return app.responses.Collection(
+        [
+            app.responses.Collection(
+                [app.responses.Text(text_line) for text_line in paragraph]
             )
+            for paragraph in paragraphs
+        ]
+    )
