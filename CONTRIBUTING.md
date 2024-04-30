@@ -2,7 +2,40 @@
 
 ## Setup
 
-Contributing requires you to have Docker installed, at least `Docker version 20.10.16`.
+Contributing requires you to have Docker installed, at least `Docker version 20.10.16`. Then, build this container from `Dockerfile`.
+
+### Install Python dependencies
+
+##### Python Virtual Environment
+
+Run `python -m venv dev.venv` inside the container's terminal to initialize Python's virtual environment.
+
+1. Install Python dependenies: `pip install -r requirements/dev.txt`.
+
+2. Install commit hooks: `pre-commit install --hook-type commit-msg`, to apply commit guards.
+
+3. Install `app/` directory: `pip install -e .`, required for global imports.
+
+> Read this for more info on global imports:
+> 
+> https://stackoverflow.com/questions/72294299/multiple-top-level-packages-discovered-in-a-flat-layout
+
+### Done!
+
+You can start modifying the code now.
+
+## Run server
+
+Type `python run.py` to start Uvicorn process.
+
+## Run Tests
+
+[more information later]
+
+
+
+Archived (for learning purposes)
+---
 
 ### Initialize The Docker Container
 
@@ -51,33 +84,3 @@ docker start $CTN_NAME
 5. Done!
 
     To stop the container, type `docker stop dev-ocr-api`.
-
-### Install Python dependencies
-
-##### Python Virtual Environment
-
-Run `python -m venv .venv` to initialize Python's virtual environment.
-
-##### Install requirements.txt
-
-Type `pip install -r requirements/dev.txt`.
-
-You also need to install commit hooks: `pre-commit install --hook-type commit-msg`.
-
-It is also required to install `app/` directory as a Python package to allow global imports.  Type `pip install -e .`.
-
-> Read this for more info on global imports:
-> 
-> https://stackoverflow.com/questions/72294299/multiple-top-level-packages-discovered-in-a-flat-layout
-
-### Done!
-
-You can start modifying the code now.
-
-## Run FastAPI server
-
-This application uses FastAPI to deliver its services.
-
-Type `cd app`, then `uvicorn main:app --reload` to run `uvicorn` server.
-
-## Run Tests
