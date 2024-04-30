@@ -28,7 +28,10 @@
 				"ms-python.python",
 				"ms-python.black-formatter",
 				"ms-azuretools.vscode-docker"
-			]
+			],
+			"settings": {
+				"python.terminal.activateEnvInCurrentTerminal": true
+			}
 		}
 	}
 
