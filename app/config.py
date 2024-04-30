@@ -1,10 +1,9 @@
 import contextlib
 from fastapi import FastAPI
-from app.db.script import initialize_database
 
 
 def __startup():
-    initialize_database()
+    pass
 
 
 def __shutdown():
