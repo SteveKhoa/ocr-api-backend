@@ -12,7 +12,7 @@ Run `python -m venv dev.venv` inside the container's terminal to initialize Pyth
 
 1. Install Python dependenies: `pip install -r requirements/dev.txt`.
 
-2. Install commit hooks: `pre-commit install --hook-type commit-msg`, to apply commit guards.
+2. Install commit hooks: `pre-commit install --install-hooks -t pre-commit -t commit-msg`, to apply commit guards.
 
 3. Install `app/` directory: `pip install -e .`, required for global imports.
 

@@ -12,7 +12,7 @@ repos:
         name: Checking commit message convention
         description: Commit message must match the convention (see ocr-api/internal/docs)
         language: pygrep
-        entry: '^(chore|test|feat|fix|build|docs|refactor|merge)!?:'
+        entry: '^(chore|test|feat|fix|build|docs|refactor|merge)\(.*\)!?:'
         args: [--multiline, --negate]
         stages: [commit-msg]
 
