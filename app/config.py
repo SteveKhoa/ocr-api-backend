@@ -13,10 +13,7 @@ def __shutdown():
 
 @contextlib.asynccontextmanager
 async def lifespan(app: FastAPI):
-    """Pre-run and After-run of FastAPI app
-
-    __startup() executed on every
-    """
+    """Pre-run and After-run of a FastAPI process"""
 
     __startup()
     yield
