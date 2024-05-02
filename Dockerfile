@@ -9,7 +9,8 @@ ENV ENVIRON=dev
 ENV DB_URL="/workspaces/ocr-api-backend/database/apikey.db"
 
 # Security environment variables
-ENV SECRET_KEY=ecccbec8ba64fa75af46ae277aeabce459fbe29f753640ffc7e98f4ecb0cd42b
+ARG SERVER_SECRET
+ENV SECRET_KEY=$SERVER_SECRET
 
 # Plugin services
 RUN apt -y install tesseract-ocr
