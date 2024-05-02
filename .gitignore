@@ -167,3 +167,4 @@ TODO.md
 *.db
 # Test data
 *.test.*
+.devcontainer
