@@ -5,9 +5,8 @@ RUN apt -y update
 RUN apt -y upgrade
 
 # Environment variables
-ENV TERM=xterm-256color
 ENV ENVIRON=dev
-ENV DB_URL="/workspaces/ocr-api-backend/db/database.db"
+ENV DB_URL="/workspaces/ocr-api-backend/database/apikey.db"
 
 # Security environment variables
 ENV SECRET_KEY=ecccbec8ba64fa75af46ae277aeabce459fbe29f753640ffc7e98f4ecb0cd42b
