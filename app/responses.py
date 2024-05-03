@@ -66,7 +66,7 @@ class FailResponse(BaseResponse):
 
 
 class ErrorResponse(BaseResponse):
-    def __init__(self, code: int, message: int, data: Any = None):
+    def __init__(self, code: int, message: int, status: int = None, data: Any = None):
         self.status = code
         self.message = message
 
