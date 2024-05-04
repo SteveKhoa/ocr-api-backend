@@ -6,7 +6,7 @@ RUN apt -y upgrade
 
 # Environment variables
 ENV ENVIRON=dev
-ENV DB_URL="/workspaces/ocr-api-backend/database/apikey.db"
+ENV DB_URL="/workspaces/ocr-api-backend/database/shared.db"
 
 # Security environment variables
 ARG SERVER_SECRET
