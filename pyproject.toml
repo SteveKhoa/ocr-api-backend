@@ -4,4 +4,4 @@ version = "0.1.0"
 description = "Self-referencing module"
 
 [tool.setuptools]
-py-modules = ["app"]
+py-modules = ["app", "database"]
