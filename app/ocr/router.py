@@ -22,9 +22,7 @@ def read_ocr_line(req: OCRLineRequestBody):
     )
     text_lines = [ocr_line.text_line for ocr_line in ocr_lines]
 
-    return app.responses.Collection(
-        [app.responses.Text(text_line) for text_line in text_lines]
-    )
+    return app.responses.Collection(text_lines)
 
 
 @router.post("/paragraph")
@@ -42,10 +40,5 @@ def read_ocr_paragraph(req: OCRParagraphRequestBody):
     paragraphs = [ocr_paragraph.get_textlines() for ocr_paragraph in ocr_paragraphs]
 
     return app.responses.Collection(
-        [
-            app.responses.Collection(
-                [app.responses.Text(text_line) for text_line in paragraph]
-            )
-            for paragraph in paragraphs
-        ]
+        [[text_line for text_line in paragraph] for paragraph in paragraphs]
     )
