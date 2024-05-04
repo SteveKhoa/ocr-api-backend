@@ -1,6 +1,7 @@
+-e /workspaces/ocr-api-backend
+pyjwt
 fastapi==0.109.2
 uvicorn==0.27.1
-opencv-python==4.7.0.72
 black==23.3.0
 numpy==1.24.2
 pytesseract==0.3.10
@@ -13,3 +14,5 @@ python-dotenv==1.0.1
 setuptools==68.0.0
 soupsieve==2.5
 scikit-learn==1.4.2
+python-multipart==0.0.9
+slowapi==0.1.9
