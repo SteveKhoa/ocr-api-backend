@@ -57,3 +57,12 @@ def create_account(db_url: str, username: str, password: str) -> Client:
         raise InvalidAccount(client)
 
     return client
+
+
+def decode_token(signed_token: str) -> dict:
+    # We wont see why we must put decode_token in `idp` module
+    # in a monolothic app. However, in distributed manner, where
+    # Resource Server and Identity Server are on different machines
+    # only Identity Server can decode the token.
+    payload = jwt.decode(signed_token, os.environ.get("SERVER_SECRET"))
+    return payload
