@@ -1,6 +1,5 @@
 """
 Common JSON Response format for OCR-API.
-
 The format is JSend-compliance. See https://github.com/omniti-labs/jsend.
 
 Success
@@ -11,6 +10,18 @@ Fail
 
 Error
     *Required keys*: status, code, message, data
+
+Notes:
+    async def __call__ in BaseResponse formats its JSON
+    using class's properties, not the 'self.data' we pass
+    into `content` parameter. For example:
+        - self.data, self.status will return:
+        {
+            status: 404,
+            data: "",
+        }
+    This explains why some keys are missing in my initial
+    implementation.
 """
 
 from typing import Any
@@ -20,7 +31,7 @@ import fastapi.responses
 
 class BaseResponse:
     async def __call__(self, scope, receive, send) -> None:
-        response = fastapi.responses.JSONResponse(self.to_json(), self.status)
+        response = fastapi.responses.JSONResponse(self.data, self.status)
 
         await response(scope, receive, send)
 
@@ -30,10 +41,7 @@ class SuccessResponse(BaseResponse):
         # Define interface explicitly, even when these parameters are
         # not in use, to clearly declare what the response would contain
         # (to be JSend compliance)
-        pass
-
-    def to_json(self):
-        return {"status": http_status.HTTP_200_OK, "data": self.data}
+        self.status = http_status.HTTP_200_OK
 
 
 class Text(SuccessResponse):
@@ -47,7 +55,7 @@ class Collection(SuccessResponse):
     """A list of Any"""
 
     def __init__(self, collection: list[Any]):
-        self.data = {"collection": [item for item in collection]}
+        self.data = {"collection": [str(item) for item in collection]}
 
 
 class AccessToken(SuccessResponse):
@@ -59,21 +67,12 @@ class AccessToken(SuccessResponse):
 
 class FailResponse(BaseResponse):
     def __init__(self, status: int, data: Any = None):
-        self.status = status
-
-    def to_json(self):
-        return {"status": self.status, "data": self.data}
+        self.status = str(status)
+        self.data = {}
 
 
 class ErrorResponse(BaseResponse):
-    def __init__(self, code: int, message: int, status: int = None, data: Any = None):
-        self.status = code
-        self.message = message
-
-    def to_json(self):
-        return {
-            "status": self.status,
-            "code": "",  # omit for now
-            "message": self.message,
-            "data": "",  # omit for now
-        }
+    def __init__(self, status: int, code: int, message: str, data: Any = None):
+        self.status = str(status)
+        self.code = str(code)
+        self.message = str(message)
