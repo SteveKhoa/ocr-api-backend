@@ -65,7 +65,7 @@ class AccessToken(SuccessResponse):
 
     def __init__(self, token: str):
         self.status = http_status.HTTP_200_OK
-        self.data = {"access_token": token}
+        self.data = {"access_token": token, "token_type": "bearer"}
 
 
 class FailResponse(BaseResponse):
