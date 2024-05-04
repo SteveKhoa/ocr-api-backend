@@ -6,7 +6,7 @@ from app.exceptions import InvalidAccount
 
 
 def read_account(client: Client) -> str:
-    """Create an JWT access token based on identity of a registered client.
+    """Create an JWT ID Token based on identity of a registered client.
 
     Args:
         client (Client):
@@ -17,12 +17,12 @@ def read_account(client: Client) -> str:
             exist in the database or username or password is invalid.
 
     Returns:
-        encoded_jwt(str): JWT Access Token
+        encoded_jwt(str): JWT ID Token
     """
     if client.exists():
-        encoded_jwt = jwt.encode(
+        id_token = jwt.encode(
             payload={
-                "iss": str(client.username),
+                "name": str(client.username),
                 "iat": time.time(),
                 "exp": time.time() + 60 * 60,
             },
@@ -30,7 +30,7 @@ def read_account(client: Client) -> str:
             algorithm="HS256",
         )
 
-        return encoded_jwt
+        return id_token
     else:
         raise InvalidAccount(client)
 

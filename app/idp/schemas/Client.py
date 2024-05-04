@@ -13,7 +13,7 @@ class Client(BaseModel):
         conn.execute(
             "INSERT INTO Clients ('uuid', 'username', 'password') VALUES (?,?,?)",
             (str(uuid.uuid1()), self.username, self.password),
-        )
+        )  # I should have hashed self.password, but anyway
         conn.commit()
         conn.close()
 
