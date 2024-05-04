@@ -48,6 +48,7 @@ class Text(SuccessResponse):
     """Text response"""
 
     def __init__(self, text: str):
+        self.status = http_status.HTTP_200_OK
         self.data = {"text": text}
 
 
@@ -55,6 +56,7 @@ class Collection(SuccessResponse):
     """A list of Any"""
 
     def __init__(self, collection: list[Any]):
+        self.status = http_status.HTTP_200_OK
         self.data = {"collection": [str(item) for item in collection]}
 
 
@@ -62,6 +64,7 @@ class AccessToken(SuccessResponse):
     """String representing access token"""
 
     def __init__(self, token: str):
+        self.status = http_status.HTTP_200_OK
         self.data = {"access_token": token}
 
 
