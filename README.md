@@ -14,3 +14,10 @@
   </p>
 </div>
 
+## Distinctive features
+
+- Improved accuracy from baseline Tesseract with [DBScan](https://en.wikipedia.org/wiki/DBSCAN) clustering algorithm.
+- [Base64](https://datatracker.ietf.org/doc/html/rfc4648#section-4)-encoded images for interoperability.
+- User input validation, including base64 and request body validations.
+- Text-from-image queries capability.
+- Pre-commit checking for development environment consistency
